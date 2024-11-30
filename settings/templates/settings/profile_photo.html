@@ -1,0 +1,68 @@
+
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container mx-auto mt-10">
+
+
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% include 'settings/topbar_settings.html' %}
+
+    <div class="bg-white rounded-md shadow-lg p-6">
+        <h3 class="text-xl mb-4">Change Profile Picture</h3>
+
+
+        <div class="flex justify-center mb-4">
+         {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="Profile Picture" class="rounded-full w-32 h-32 object-cover">
+             {% else %}
+             <img src="{% static 'images/user.jpg' %}" alt="Profile Picture" class="rounded-full w-32 h-32 object-cover">
+            {% endif %}
+        </div>
+
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="profile_picture" class="block text-sm font-medium text-gray-700">Upload New Profile Picture</label>
+                <input type="file" name="profile_picture" id="profile_picture" class="mt-2 block w-full text-sm text-gray-500">
+            </div>
+
+
+            <div class="flex justify-end space-x-4">
+                <a href="" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md">Cancel</a>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.alert {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.alert-container {
+    margin-bottom: 10px;
+}
+
+img {
+    border-radius: 50%;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+<div id="downer" class="container m-auto">
+
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+  {% include 'settings/topbar_settings.html' %}
+
+    <div  class="grid lg:grid-cols-3 mt-12 gap-8">
+        <div>
+            <h3 class="text-xl mb-2"> Basic</h3>
+            <p> Lorem ipsum dolor sit amet nibh consectetuer adipiscing elit</p>
+        </div>
+        <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2">
+            <div class="grid grid-cols-2 gap-3 lg:p-6 p-4">
+                <div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="">Full Name</label>
+                        <input type="text" name="fullname" value="{{ request.user.fullname }}" class="shadow-none bg-gray-100">
+                </div>
+                <div class="col-span-2">
+                    <label for=""> Email</label>
+                    <input type="text" name="email"  value="{{ request.user.email }}" class="shadow-none bg-gray-100">
+                </div>
+                <div class="col-span-2">
+                    <label for="about">About me</label>
+                    <input id="about" name="bio"  value="{{ profile.bio }}" class="shadow-none bg-gray-100">
+                </div>
+                <div>
+                    <label  for=""> Working at</label >
+                    <input type="text" name="working" value="{{ profile.working_at }}" class="shadow-none bg-gray-100">
+                </div>
+                <div>
+                    <label for=""> Relationship </label>
+                    <select id="relationship" name="relationship" class="shadow-none bg-gray-100">
+                        {% for rel in relation %}
+                            <option value="{{ rel.id }}" {% if rel.id == profile.relations.id %} selected {% endif %}>{{ rel.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
+                <a type="btn btn-danger" class="p-2 px-4 rounded bg-gray-50 text-red-500"> Cancel</a>
+                <button onclick="window_downer()" type="submit" class="button bg-blue-700"> Save </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function window_downer(){
+    window.location.href = '#downer'
+}
+</script>
+
+<style>
+.alert {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.alert-container {
+    margin-bottom: 10px;
+}
+
+.alert-success {
+    background-color: #4CAF50;
+}
+</style>
+
+{% endblock %}

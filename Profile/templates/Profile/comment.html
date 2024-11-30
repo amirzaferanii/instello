@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Section with Reply</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .comment-section {
+            max-width: 1190px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            resize: vertical;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .comment-form button {
+            padding: 8px 12px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .comment {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+        }
+        .comment .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .comment .content {
+            background-color: #f4f4f9;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .comment .username {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .comment .user-id {
+            color: #888;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        .replies {
+            margin-left: 50px;
+            border-left: 2px solid #ddd;
+            padding-left: 15px;
+        }
+        .reply-button {
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="comment-section">
+        <h2>نظرها</h2>
+
+        <!-- Comment Form -->
+        <form method="post">
+            {% csrf_token %}
+            <div class="comment-form">
+                <textarea name="body" rows="4" cols="50" placeholder="ارسال نظر..." required></textarea>
+                <input class="form-control" name="parent_id" id="parent_id" type="hidden" value="">
+                <button type="submit">ارسال کامنت</button>
+            </div>
+        </form>
+
+        <!-- Comments List -->
+        {% for comment in comments %}
+            {% if not comment.parent %}
+                <div class="comments">
+                    <div class="comment">
+                        {% if comment.user.profiles.first.photo %}
+                        <img src="{{ comment.user.profiles.first.photo.url }}" alt="User Avatar" class="avatar">
+                            {% endif %}
+                        <div class="content">
+                            <p class="username">{{ comment.user.fullname }}<span class="user-id">@{{ comment.user.username }}</span></p>
+                            <p>{{ comment.body }}</p>
+                            <button onclick="set_value({{ comment.id }})" class="reply-button">پاسخ</button>
+                        </div>
+                    </div>
+
+                    {% for reply in comments %}
+                        {% if reply.parent == comment %}
+                            <div class="replies">
+                                <div class="comment">
+                                    {% if reply.user.profiles.first.photo %}
+                                    <img src="{{ reply.user.profiles.first.photo.url }}" alt="User Avatar" class="avatar">
+                                        {% endif %}
+                                    <div class="content">
+                                        <p class="username">{{ reply.user.fullname }}<span class="user-id">@{{ reply.user.username }}</span></p>
+                                        <p>{{ reply.body }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
+
+<script>
+    function set_value(id) {
+        document.getElementById('parent_id').value = id;
+    }
+</script>
+
+{% endblock %}

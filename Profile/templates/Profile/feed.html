@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block main %}
+
+    <div class="container m-auto">
+
+        <h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> پست دنبال می کنید </h1>
+
+        <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
+
+            <!-- left sidebar-->
+        {% if post_count > 0 %}
+            <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+
+                {% for item_post in all_posts %}
+                    <!-- post 1-->
+                    <div class="bg-white shadow rounded-md dark:bg-gray-900 -mx-2 lg:mx-0">
+
+                        <!-- post header-->
+                        <div class="flex justify-between items-center px-4 py-3">
+                            <div class="flex flex-1 items-center space-x-4">
+                                <a href="#">
+                                    <div class="bg-gradient-to-tr from-yellow-600 to-pink-600 p-0.5 rounded-full">
+                                        {% if item_post.profile.photo %}
+                                            <img src="{{ item_post.profile.photo.url }}"
+                                                 class="bg-gray-200 border border-white rounded-full w-8 h-8">
+                                        {% else %}
+                                            <img src="{% static 'images/user.jpg' %}"
+                                                 class="bg-gray-200 border border-white rounded-full w-8 h-8">
+                                        {% endif %}
+                                    </div>
+                                </a>
+                                <span class="block capitalize font-semibold dark:text-gray-100"><a
+                                        href="{% url 'profile:home' item_post.user.slug %}">{{ item_post.user.username }}</a></span>
+                            </div>
+                            <div>
+                                <a href="#"> <i
+                                        class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 dark:hover:bg-gray-700"></i>
+                                </a>
+                                <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
+                                     uk-drop="mode: hover;pos: top-right">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div uk-lightbox>
+                            <a href="{{ item_post.photo.url }}">
+                                <img src="{{ item_post.photo.url }}">
+                            </a>
+                        </div>
+                        <div class="py-3 px-4 space-y-3">
+                            <div class="flex space-x-4 lg:font-bold">
+                                <!-- Like Button -->
+                                <form action="{% url 'profile:like_post' item_post.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="flex items-center space-x-2">
+                                        <div class="p-2 text-black">
+                                            {% if item_post.id in is_liked %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="fill-current text-red-500" width="24" height="24">
+                                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                            </svg>
+                                                {% else %}
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="24" height="24" class="hover:text-red-500 transition-colors duration-200">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                            </svg>
+                                            {% endif %}
+                                        </div>
+                                        <div> پسندیدن</div>
+                                    </button>
+                                </form>
+                                 {% if item_post.comment_status == True %}
+                                <!-- Comment Button -->
+                                <a href="{% url 'profile:comment' item_post.id  %}" class="flex items-center space-x-2">
+                                    <div class="p-2 text-black">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor"
+                                             width="24" height="24"
+                                             class="hover:text-blue-500 transition-colors duration-200">
+                                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+                                        </svg>
+                                    </div>
+                                    <div> نظر ها</div>
+                                </a>
+                                  {% endif %}
+                                <!-- Share Button -->
+                                <a href="#" class="flex items-center space-x-2 flex-1 justify-end">
+                                    <div class="p-2 text-black">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                             stroke="currentColor"
+                                             width="24" height="24"
+                                             class="hover:text-green-500 transition-colors duration-200">
+                                            <path d="M4 12v1c0 1.1.9 2 2 2h9v3l5-4.5L15 9v3H6c-1.1 0-2 .9-2 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div> اشتراک</div>
+                                </a>
+                            </div>
+                              <div><p>{{ item_post.caption }}</p></div>
+                            <!-- Liked section -->
+                            <div class="flex items-center space-x-3 mt-3">
+                                {% for like in item_post.likes.all|slice:':3' %}
+                                 {% if like.user.id in user_request_following %}
+                                <div class="flex items-center">
+                                   <img src="{{ like.user_profile.photo.url }}" class="w-8 h-8 rounded-full">
+                                </div>
+                                    {% endif %}
+                                    {% endfor %}
+                            {% for name in item_post.likes.all|slice:':1' %}
+                            {% if name.user.id in user_request_following %}
+                                <div class="dark:text-gray-100 text-sm"> Liked by <strong> {{ name.user.username }}</strong> and <strong> {{ item_post.likes.count }} <a href="{% url 'profile:post_liker' item_post.id %}"> others </a></strong>
+                                </div>
+                                {% else %}
+                                <div class="dark:text-gray-100 text-sm"> {{ item_post.likes.count }} <strong> <a href="{% url 'profile:post_liker' item_post.id %}"> تمام لایک کننده ها </a></strong>
+                                </div>
+                                 {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="bg-white shadow rounded-md dark:bg-gray-900 -mx-2 lg:mx-0" id="toggle" hidden>
+                    <div class="flex justify-between items-center px-4 py-3">
+                        <div class="flex flex-1 items-center space-x-4">
+                            <a href="#">
+                                <div class="bg-gradient-to-tr from-yellow-600 to-pink-600 p-0.5 rounded-full">
+                                    <img src="{% static 'images/avatars/avatar-2.jpg' %}"
+                                         class="bg-gray-200 border border-white rounded-full w-8 h-8">
+                                </div>
+                            </a>
+                        </div>
+                        <div>
+                            <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
+                                 uk-drop="mode: hover;pos: top-right">
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            {% else %}
+            <div class="container m-auto">
+           <img src="{% static 'images/NoPost.png' %}">
+            </div>
+        {% endif %}
+
+
+
+            <div class="lg:w-5/12">
+
+                <div class="bg-white dark:bg-gray-900 shadow-md rounded-md overflow-hidden">
+
+                    <div class="bg-gray-50 dark:bg-gray-800 border-b border-gray-100 flex items-baseline justify-between py-4 px-6 dark:border-gray-800">
+                        <h2 class="font-semibold text-lg">پیشنهادی</h2>
+                    </div>
+
+                    <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 dark:divide-gray-800 dark:text-gray-100">
+                        {% for users in users %}
+                            <div class="flex items-center justify-between py-3">
+                                <div class="flex flex-1 items-center space-x-4">
+                                    <a href="profile.html">
+                                        {% if users.photo %}
+                                            <img src="{{ users.photo.url }}" class="bg-gray-200 rounded-full w-10 h-10">
+                                        {% else %}
+                                            <img src="{% static 'images/user.jpg' %}"
+                                                 class="bg-gray-200 rounded-full w-10 h-10">
+                                        {% endif %}
+                                    </a>
+                                    <div class="flex flex-col">
+                                        <span class="block capitalize font-semibold"><a href=""><a
+                                                href="{% url 'profile:home' users.user.slug %}">{{ users.user.username }}</a></a></span>
+                                        {% if users.working_at %}
+                                            <span class="block capitalize text-sm">Working In {{ users.working_at }} </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <form action="{% url 'profile:feed-follow' users.user.slug %}" method="post">
+                                    {% csrf_token %}
+                                    {% if users.id in is_followed %}
+                                        <button class="border border-gray-200 font-semibold px-4 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-500 hover:text-white hover:border-blue-600 dark:border-gray-800">
+                                            دنبال می کنید
+                                        </button>
+                                    {% else %}
+                                        <button class="border border-gray-200 font-semibold px-4 py-1 rounded-full bg-pink-600 text-white hover:bg-blue-500 hover:text-white hover:border-blue-600 dark:border-gray-800">
+                                            دنبال کردن
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    </div>
+
+    </div>
+
+
+
+    <!-- Story modal -->
+    <div id="story-modal" class="uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog story-modal">
+            <button class="uk-modal-close-default lg:-mt-9 lg:-mr-9 -mt-5 -mr-5 shadow-lg bg-white rounded-full p-4 transition dark:bg-gray-600 dark:text-white"
+                    type="button" uk-close></button>
+
+            <div class="story-modal-media">
+                <img src="{% static 'images/post/img4.jpg' %}" alt="" class="inset-0 h-full w-full object-cover">
+            </div>
+            <div class="flex-1 bg-white dark:bg-gray-900 dark:text-gray-100">
+
+                <!-- post header-->
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

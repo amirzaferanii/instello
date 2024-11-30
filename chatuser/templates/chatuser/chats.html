@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load render_partial %}
+{% block main %}
+    {% if chats > 0 %}
+<div class="container m-auto pt-5">
+    <h1 class="font-semibold lg:mb-6 mb-3 text-2xl"> پیام ها</h1>
+    <div class="lg:flex lg:shadow lg:bg-white lg:space-y-0 space-y-8 rounded-md lg:-mx-0 -mx-5 overflow-hidden lg:dark:bg-gray-800">
+                   <div class="lg:w-4/12 bg-white border-r overflow-hidden dark:bg-gray-800 dark:border-gray-600">
+                        <!-- search-->
+                        <div class="border-b px-4 py-4 dark:border-gray-600">
+                            <div class="bg-gray-100 input-with-icon rounded-md dark:bg-gray-700">
+                                <input id="autocomplete-input" type="text" placeholder="Search" class="bg-transparent max-h-10 shadow-none">
+                                <i class="icon-material-outline-search"></i>
+                            </div>
+                        </div>
+
+{% render_partial 'chat_user:chat_list' %}
+{% else %}
+   <div class="center-image">
+    <img src="{% static 'images/nomessage.png' %}">
+</div>
+<style>
+.center-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.center-image img {
+    max-width: 50%;
+    height: auto;
+}
+
+        </style>
+
+{% endif %}
+  
+{% endblock %}

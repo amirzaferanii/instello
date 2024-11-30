@@ -1,0 +1,28 @@
+{% load static %}
+<!-- user list-->
+
+<div class="pb-16 w-full">
+    <ul class="dark:text-gray-100">
+        {% for chat in chats %}
+        <li>
+            <a href="{% url 'chat_user:chat' chat.chat.chat_id %}" class="block flex items-center py-3 px-4 space-x-3 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <div class="w-12 h-12 rounded-full relative flex-shrink-0">
+                    {% if chat.other_user_profile.photo %}
+                    <img src="{{ chat.other_user_profile.photo.url }}" alt="" class="absolute h-full w-full rounded-full">
+                    {% else %}
+                    <img src="{% static 'images/user.jpg' %}" alt="" class="absolute h-full w-full rounded-full">
+                    {% endif %}
+                    <span class="absolute bg-green-500 border-2 border-white bottom-0 right-0 h-3 w-3 m-0.5 rounded-full shadow-md"></span>
+                </div>
+
+                <div class="flex-1 min-w-0 relative text-gray-500">
+               <h4 class="text-black font-semibold dark:text-white">{{ chat.other_chat.username }}</h4>
+                    <span class="absolute right-0 top-1 text-xs">Sun</span>
+                    <p class="truncate">{{ chat.last_message.content }}</p>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</div>
