@@ -13,7 +13,7 @@ services:
 
 
   nginx_instello:
-    image: nginx:latest
+    image: nginx:alpine
     container_name: nginx_server
     ports:
       - "80:80"  # Map host port 80 to the container port 80

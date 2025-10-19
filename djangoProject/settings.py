@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #My_Apps
+    'django_extensions',
     'Account.apps.AccountConfig',
     'Profile.apps.ProfileConfig',
     'django_render_partial',
