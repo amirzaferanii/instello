@@ -20,7 +20,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Point to the Nginx configuration
     depends_on:
-      - web
+      - instello
+
     networks:
       - django_network
 
