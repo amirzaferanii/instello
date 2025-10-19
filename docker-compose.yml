@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  instello:
+    build: .
+    container_name: django_app
+    volumes:
+      - .:/app
+    expose:
+      - "8000"  # Make the internal port accessible to Nginx
+    networks:
+      - django_network
+
+
+  nginx_instello:
+    image: nginx:alpine
+    container_name: nginx_server
+    ports:
+      - "80:80"  # Map host port 80 to the container port 80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Point to the Nginx configuration
+    depends_on:
+      - instello
+
+    networks:
+      - django_network
+
+networks:
+  django_network:
+    driver: bridge
+
+
